@@ -59,8 +59,10 @@ def discretized_gaussian_log_likelihood(x, *, means, log_scales):
     :return: a tensor like x of log probabilities (in nats).
     """
     assert x.shape == means.shape == log_scales.shape
-    centered_x = x - means
+    centered_x = x - means  # 减去均值
     inv_stdv = th.exp(-log_scales)
+    
+    # 将[-1, 1]分成255个bins，最右边的CDF记为1，最左边的CDF记为0
     plus_in = inv_stdv * (centered_x + 1.0 / 255.0)
     cdf_plus = approx_standard_normal_cdf(plus_in)
     min_in = inv_stdv * (centered_x - 1.0 / 255.0)

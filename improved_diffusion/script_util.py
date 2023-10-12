@@ -38,13 +38,13 @@ def model_and_diffusion_defaults():
 def create_model_and_diffusion(
     image_size,
     class_cond,
-    learn_sigma,
+    learn_sigma,  # learn variance or not
     sigma_small,
     num_channels,
     num_res_blocks,
     num_heads,
     num_heads_upsample,
-    attention_resolutions,
+    attention_resolutions,   # 在哪些位置做MHSA
     dropout,
     diffusion_steps,
     noise_schedule,
@@ -239,13 +239,17 @@ def create_gaussian_diffusion(
     rescale_learned_sigmas=False,
     timestep_respacing="",
 ):
+    # 1. choose noise schedule for beta (use cosine)
     betas = gd.get_named_beta_schedule(noise_schedule, steps)
+    
+    # 2. choose loss
     if use_kl:
         loss_type = gd.LossType.RESCALED_KL
     elif rescale_learned_sigmas:
         loss_type = gd.LossType.RESCALED_MSE
     else:
         loss_type = gd.LossType.MSE
+    
     if not timestep_respacing:
         timestep_respacing = [steps]
     return SpacedDiffusion(

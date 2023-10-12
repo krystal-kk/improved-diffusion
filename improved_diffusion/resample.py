@@ -12,9 +12,9 @@ def create_named_schedule_sampler(name, diffusion):
     :param name: the name of the sampler.
     :param diffusion: the diffusion object to sample for.
     """
-    if name == "uniform":
+    if name == "uniform":  #均匀采样
         return UniformSampler(diffusion)
-    elif name == "loss-second-moment":
+    elif name == "loss-second-moment":  # 二阶动量平滑loss
         return LossSecondMomentResampler(diffusion)
     else:
         raise NotImplementedError(f"unknown schedule sampler: {name}")

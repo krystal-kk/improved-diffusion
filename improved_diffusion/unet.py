@@ -333,6 +333,7 @@ class UNetModel(nn.Module):
         self.num_heads = num_heads
         self.num_heads_upsample = num_heads_upsample
 
+        # time embedding
         time_embed_dim = model_channels * 4
         self.time_embed = nn.Sequential(
             linear(model_channels, time_embed_dim),
@@ -340,6 +341,7 @@ class UNetModel(nn.Module):
             linear(time_embed_dim, time_embed_dim),
         )
 
+        # conditions
         if self.num_classes is not None:
             self.label_emb = nn.Embedding(num_classes, time_embed_dim)
 
@@ -356,7 +358,7 @@ class UNetModel(nn.Module):
         for level, mult in enumerate(channel_mult):
             for _ in range(num_res_blocks):
                 layers = [
-                    ResBlock(
+                    ResBlock(   # 传入time embedding
                         ch,
                         time_embed_dim,
                         dropout,
